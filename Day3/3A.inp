@@ -1,0 +1,159 @@
+/clear
+/prep7
+
+et,1,182
+width = 1
+height = 1
+filenam='data'
+
+one='1'
+two='2'
+three='3'
+four='4'
+five='5'
+six='6'
+seven='7'
+eight='8'
+nine='9'
+zero='0'
+
+n_num =ndnext(0)
+
+/inquire,numlines,lines,filenam,'txt'
+*dim,line,string,248
+
+
+*do,j,1,numlines,1
+
+*sread,line,filenam,'txt',,,j-1,1
+
+line_length = strleng(line(1))
+place = 1
+*do,i,line_length,1,-1
+
+character = strsub(line(1),i,1)
+
+	*if,character,eq,'.',then
+		place = 1
+		*cycle
+	*elseif,character,eq,one,then
+		mat,1
+		real,place
+		place = place+1
+		buildele
+	*elseif,character,eq,two,then
+		mat,2
+		real,place
+		place = place+1
+		buildele
+	*elseif,character,eq,three,then
+		mat,3
+		real,place
+		place = place+1
+		buildele
+	*elseif,character,eq,four,then
+		mat,4
+		real,place
+		place = place+1
+		buildele
+	*elseif,character,eq,five,then
+		mat,5
+		real,place
+		place = place+1
+		buildele
+	*elseif,character,eq,six,then
+		mat,6
+		real,place
+		place = place+1
+		buildele
+	*elseif,character,eq,seven,then
+		mat,7
+		real,place
+		place = place+1
+		buildele
+	*elseif,character,eq,eight,then
+		mat,8
+		real,place
+		place = place+1
+		buildele
+	*elseif,character,eq,nine,then
+		mat,9
+		real,place
+		place = place+1
+		buildele
+	*elseif,character,eq,zero,then
+		mat,11  !cannot have mat number = 0 
+		real,place
+		place = place+1
+		buildele
+	*else
+		mat,10
+		place = 1
+		buildele
+	*endif
+*enddo
+*enddo
+
+nummrg,node
+esel,s,mat,,10
+
+*if,line_length,gt,numlines,then
+loop = line_length
+*else
+loop = numlines
+*endif
+
+*do,k,1,loop
+nsle
+esln
+*enddo
+esel,inve
+edele,all
+alls
+eplot
+
+esel,s,mat,,10
+edele,all
+alls
+eplot
+
+total = 0
+elem_1 = elnext(0)
+*get,e_count,elem,0,count
+
+*do,z,1,e_count
+
+*get,r_num,elem,elem_1,attr,real
+*get,m_num,elem,elem_1,attr,mat
+
+!take care of zeros in numbers
+*if,m_num,eq,11,then
+	m_num = 0
+*endif
+
+total = total+(m_num*(10**(r_num-1)))
+elem_1 = elnext(elem_1)
+*enddo
+
+*cfopen,total,txt
+*vwrite,total
+%I
+*cfclos
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
