@@ -1,0 +1,302 @@
+/clear
+/prep7
+
+et,1,182
+width = 1
+height = 1
+filenam='sample'
+
+one='1'
+two='2'
+three='3'
+four='4'
+five='5'
+six='6'
+seven='7'
+eight='8'
+nine='9'
+zero='0'
+gear='*'
+
+n_num =ndnext(0)
+
+/inquire,numlines,lines,filenam,'txt'
+*dim,line,string,248
+
+sect = 1
+*do,j,1,numlines,1
+
+*sread,line,filenam,'txt',,,j-1,1
+
+line_length = strleng(line(1))
+place = 1
+
+
+*do,i,line_length,1,-1
+
+character = strsub(line(1),i,1)
+
+	*if,character,eq,'.',then
+		place = 1
+		*if,sect,eq,9,then
+		sect=sect+2
+		*else
+		sect=sect+1
+		*endif
+		*cycle
+	*elseif,character,eq,one,then
+		mat,1
+		real,place
+		secnum,sect
+		place = place+1
+		buildele
+	*elseif,character,eq,two,then
+		mat,2
+		real,place
+		secnum,sect
+		place = place+1
+		buildele
+	*elseif,character,eq,three,then
+		mat,3
+		real,place
+		secnum,sect
+		place = place+1
+		buildele
+	*elseif,character,eq,four,then
+		mat,4
+		real,place
+		secnum,sect
+		place = place+1
+		buildele
+	*elseif,character,eq,five,then
+		mat,5
+		real,place
+		secnum,sect
+		place = place+1
+		buildele
+	*elseif,character,eq,six,then
+		mat,6
+		real,place
+		secnum,sect
+		place = place+1
+		buildele
+	*elseif,character,eq,seven,then
+		mat,7
+		real,place
+		secnum,sect
+		place = place+1
+		buildele
+	*elseif,character,eq,eight,then
+		mat,8
+		real,place
+		secnum,sect
+		place = place+1
+		buildele
+	*elseif,character,eq,nine,then
+		mat,9
+		real,place
+		secnum,sect
+		place = place+1
+		buildele
+	*elseif,character,eq,zero,then
+		mat,11  !cannot have mat number = 0 
+		real,place
+		secnum,sect
+		place = place+1
+		buildele
+	*elseif,character,eq,gear,then
+		mat,10  !cannot have mat number = 0 
+		real,place
+		secnum,10
+		sect=sect+1
+		place = 1
+		buildele	
+	!*else
+	!	mat,10
+	!	place = 1
+	!	buildele
+	*endif
+*enddo
+*enddo
+
+nummrg,node
+
+*get,sec_1,elem,0,secm
+*do,k,1,sec_1
+	sectype,%k%,beam,rect,,0
+	secdata,1,1
+*enddo
+
+!now find just gears and elements they are attached to
+*if,line_length,gt,numlines,then
+loop = line_length
+*else
+loop = numlines
+*endif
+esel,s,mat,,10
+*do,k,1,loop
+nsle
+esln
+*enddo
+esel,inve
+edele,all
+alls
+eplot
+
+
+
+esel,s,mat,,10
+elem_num=elnext(0)
+*get,mat_10,elem,0,count
+
+*do,zz,1,mat_10
+	esel,s,elem,,elem_num
+	*do,zzz,1,10
+	nsle
+	esln
+	*enddo
+	cdwrite,db,group%zz%,cdb
+	esel,s,mat,,10
+	elem_num=elnext(elem_num)
+*enddo
+
+*cfopen,zz,txt
+*vwrite,zz
+('zz=',F10.0)
+*cfclos
+
+/clear
+/input,zz,txt
+/prep7
+summation=0
+
+
+*do,iii,1,zz
+	*cfopen,iii,txt
+    *vwrite,iii
+    ('iii=',F10.0)
+    *cfclos
+	/clear
+	/input,iii,txt
+	cdread,db,group%iii%,cdb
+	/prep7
+	/input,zz,txt
+	/input,iii,txt
+	tot_calc = 0
+	total_1 = 0
+	total_2 = 0
+	summation = 0
+	*get,sec_1,secp,0,num,max
+	*do,i,1,sec_1
+	esel,s,sec,,i
+	*get,ec,elem,0,count
+	*if,ec,eq,0,then
+		sdelete,i,i
+	*endif
+    *enddo
+    numcmp,secn
+	
+	*get,sec_1,elem,0,secm
+	*if,sec_1,gt,3,then
+		tot_calc = 0
+	*else
+		tot_calc = 1
+	*endif
+	
+	esel,s,mat,,10
+	*get,temp_1,elem,elnext(0),attr,secn
+	edele,all
+	sdelete,temp_1
+	allsel
+	
+	!  first set of elements
+	*get,sec_1,elem,0,secm
+	esel,s,sec,,sec_1
+	
+	total_1 = 0
+    elem_1 = elnext(0)
+    *get,e_count,elem,0,count
+
+    *do,z,1,e_count
+
+	*get,r_num,elem,elem_1,attr,real
+	*get,m_num,elem,elem_1,attr,mat
+
+	!take care of zeros in numbers
+	*if,m_num,eq,11,then
+		m_num = 0
+	*endif
+	total_1 = total_1+(m_num*(10**(r_num-1)))
+	elem_1 = elnext(elem_1)
+	*enddo
+	
+	edele,all
+	sdelete,sec_1
+
+!  second set of elements
+	alls
+	total_2 = 0
+    elem_1 = elnext(0)
+    *get,e_count,elem,0,count
+
+    *do,z,1,e_count
+
+	*get,r_num,elem,elem_1,attr,real
+	*get,m_num,elem,elem_1,attr,mat
+
+	!take care of zeros in numbers
+	*if,m_num,eq,11,then
+		m_num = 0
+	*endif
+	total_2 = total_2+(m_num*(10**(r_num-1)))
+	elem_1 = elnext(elem_1)
+	*enddo
+
+*if,tot_calc,eq,1,then
+	summation = tot_calc*(total_1*total_2)
+	*cfopen,totals,txt,,append
+	*vwrite,summation
+%I
+*cfclos
+*endif
+
+*enddo
+
+
+!get grand total
+/inquire,numlines,lines,'totals','txt'
+*dim,line2,string,248
+grand_total = 0
+temp_1 = 0
+*do,j,1,numlines,1
+*sread,line2,'totals','txt',,,j-1,1
+temp_1 = valchr(line2(1))
+grand_total=grand_total+temp_1
+*enddo
+
+*cfopen,grandtotal,txt
+*vwrite,grand_total
+%I
+*cfclos
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

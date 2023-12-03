@@ -1,0 +1,17 @@
+n,,width*i,-j-.5,0
+n_1 = ndnext(n_num)
+n_num = n_1
+
+n,,width*i+1,-j-.5,0
+n_2 = ndnext(n_num)
+n_num = n_2
+
+n,,width*i+1,-j+.5,0
+n_3 = ndnext(n_num)
+n_num = n_3
+
+n,,width*i,-j+.5,0
+n_4 = ndnext(n_num)
+n_num = n_4
+
+e,n_1,n_2,n_3,n_4
