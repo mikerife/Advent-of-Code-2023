@@ -1,0 +1,78 @@
+/clear
+/inquire,numlines,lines,'sample','txt'
+
+red = 'red'
+blue = 'blue'
+green = 'green'
+*dim,comma,string,1
+comma(1)=','
+*dim,test_red,string,248
+*dim,test_blue,string,248
+*dim,test_green,string,248
+
+*dim,games,array,numlines,5
+
+*do,i,1,numlines
+	
+	red_value = 0
+	blue_value = 0
+	green_value = 0
+	
+	*sread,line,'sample','txt',,,i-1,1
+	games(i,1) = i
+	
+	
+	line(1) = strcomp(line(1))
+	line(1) = strcat(line(1),comma(1))
+	line_length = strleng(line(1))
+	
+	semi
+	
+	*do,ii,1,semi_counter
+	
+	start = (semi(1,ii)+1)
+	end = semi(1,ii+1)-semi(1,ii)
+	line_part = strsub(line(1),start, end)
+	tr = strsub(line(1),semi(1,ii+1)-3,3)
+	tb = strsub(line(1),semi(1,ii+1)-4,4)
+	tg = strsub(line(1),semi(1,ii+1)-5,5)
+	test_red(1) = tr
+	test_blue(1) = tb
+	test_green(1) = tg
+	
+	*if,ii,eq,1,then
+	game_number = strsub(line(1), 5, semi(1,ii)-5)
+	
+	*elseif,'%test_red(1)%',eq,'red',then
+		value = strsub(line(1),semi(1,ii)+1,semi(1,ii+1)-semi(1,ii)-4)
+		value = valchr(value)
+		*if,value,gt,red_value,then
+			red_value = value
+		*endif
+	*elseif,'%test_blue(1)%',eq,'blue',then
+		value = strsub(line(1),semi(1,ii)+1,semi(1,ii+1)-semi(1,ii)-5)
+		value = valchr(value)
+		*if,value,gt,blue_value,then
+			blue_value = value
+		*endif
+	*elseif,'%test_green(1)%',eq,'green',then
+		value = strsub(line(1),semi(1,ii)+1,semi(1,ii+1)-semi(1,ii)-6)
+		value = valchr(value)
+		*if,value,gt,green_value,then
+			green_value = value
+		*endif
+	*endif
+	*enddo
+	games(i,2) = red_value
+	games(i,3) = blue_value
+	games(i,4) = green_value
+*enddo
+
+*voper,games(1,5),games(1,2),mult,games(1,3)
+*voper,games(1,5),games(1,5),mult,games(1,4)
+*vscfun,total,sum,games(1,5)
+*cfopen,total,txt
+*vwrite,total
+%I
+*cfclos	
+	
