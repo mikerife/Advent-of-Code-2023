@@ -1,0 +1,29 @@
+/clear
+/inquire,numlines,lines,'sample','txt'
+*dim,values,array,numlines,3
+*do,i,1,numlines
+	*sread,line,'sample','txt',,,i-1,1
+	line_length = strleng(line(1))
+	*do,j,1,line_length
+		value = valchr(strsub(line(1),j,1))
+		*if,value,gt,.1,exit
+		*endif
+	*enddo
+	values(i,1) = value*10
+	
+	*do,k,line_length,1,-1
+		value = valchr(strsub(line(1),k,1))
+		*if,value,gt,.1,exit
+		*endif
+	*enddo
+	values(i,2) = value
+*enddo
+
+*voper,values(1,3),values(1,1),add,values(1,2)
+*vscfun,total,sum,values(1,3)
+
+*cfopen,total,txt
+*vwrite,total
+%I
+*cfclos
+save,model,db
