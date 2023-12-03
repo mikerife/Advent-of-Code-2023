@@ -1,0 +1,139 @@
+/clear
+/inquire,numlines,lines,'sample2','txt'
+
+*dim,values,array,numlines,3
+
+!forward
+*do,ii,1,numlines,1
+
+*sread,line,'sample2','txt',,,ii-1,1
+
+line_length = strleng(line(1))
+	
+	value = 0
+	*do,j,1,line_length
+		value = valchr(strsub(line(1),j,1))
+		*if,value,gt,.1,exit
+		*endif
+	*enddo
+	
+	
+	
+	end_j = j
+	number_1 = 0
+	*if,end_j-3,ge,0,and,number_1,eq,0,then
+	*do,j,1,end_j-3
+		number1 = strsub(line(1),j,3)
+		number2 = strsub(line(1),j,4)
+		number3 = strsub(line(1),j,5)
+		*if,number1,eq,'one',then
+			number_1 = 1
+			*exit
+		*elseif,number1,eq,'two',then
+			number_1 = 2
+			*exit
+		*elseif,number1,eq,'six',then
+			number_1 = 6
+			*exit
+		*elseif,number1,eq,'two',then
+			number_1 = 2
+			*exit
+		*elseif,number2,eq,'four',then
+			number_1 = 4
+			*exit
+		*elseif,number2,eq,'five',then
+			number_1 = 5
+			*exit
+		*elseif,number2,eq,'nine',then
+			number_1 = 9
+			*exit
+		*elseif,number3,eq,'three',then
+			number_1 = 3
+			*exit
+		*elseif,number3,eq,'seven',then
+			number_1 = 7
+			*exit
+		*elseif,number3,eq,'eight',then
+			number_1 = 8
+			*exit
+		*endif
+	*enddo
+	*endif
+	*if,number_1,eq,0,then
+		values(ii,1) = value*10
+	*else
+		values(ii,1) = number_1*10
+	*endif
+*enddo
+
+
+!backwards
+
+*do,ii,1,numlines,1
+*sread,line,'testdata','txt',,,ii-1,1
+line_length = strleng(line(1))
+	value2 = 0
+	*do,k,line_length,0,-1
+		value2 = valchr(strsub(line(1),k,1))
+		*if,value2,gt,.1,exit
+		*endif
+	*enddo
+	
+	end_k = k
+	number_2 = 0
+	*if,number_2,eq,0,then
+	*do,jj,line_length,end_k,-1
+		number1 = strsub(line(1),jj,3)
+		number2 = strsub(line(1),jj,4)
+		number3 = strsub(line(1),jj,5)
+		*if,number1,eq,'one',then
+			number_2 = 1
+			*exit
+		*elseif,number1,eq,'two',then
+			number_2 = 2
+			*exit
+		*elseif,number1,eq,'six',then
+			number_2 = 6
+			*exit
+		*elseif,number1,eq,'two',then
+			number_2 = 2
+			*exit
+		*elseif,number2,eq,'four',then
+			number_2 = 4
+			*exit
+		*elseif,number2,eq,'five',then
+			number_2 = 5
+			*exit
+		*elseif,number2,eq,'nine',then
+			number_2 = 9
+			*exit
+		*elseif,number3,eq,'three',then
+			number_2 = 3
+			*exit
+		*elseif,number3,eq,'seven',then
+			number_2 = 7
+			*exit
+		*elseif,number3,eq,'eight',then
+			number_2 = 8
+			*exit
+		*endif
+	*enddo
+	*endif
+	*if,number_2,eq,0,then
+		values(ii,2) = value2
+	*else
+		values(ii,2) = number_2
+	*endif
+*enddo
+
+*voper,values(1,3),values(1,1),add,values(1,2)
+*vscfun,total,sum,values(1,3)
+
+*cfopen,total,txt
+*vwrite,total
+%I
+*cfclos
+save,model,db
+
+
+
