@@ -1,0 +1,31 @@
+*del,semi
+place=0
+semi_counter = 0
+*do,j,1,line_length
+  test = strsub(line(1),j,1)
+    *if,test,eq,':',then
+	semi_counter = semi_counter+1
+	*elseif,test,eq,',',then
+	semi_counter = semi_counter+1
+	*elseif,test,eq,';',then
+	semi_counter = semi_counter+1
+  *endif
+*enddo
+
+*dim,semi,array,1,semi_counter+1
+semi(1,1)=1
+place = 2
+*do,j,1,line_length
+  test = strsub(line(1),j,1)
+  *if,test,eq,':',then
+	semi(1,place) = j
+	place=place+1
+  *elseif,test,eq,',',then
+	semi(1,place) = j
+	place=place+1
+  *elseif,test,eq,';',then
+	semi(1,place) = j
+	place=place+1
+  *endif
+*enddo
+*del,place
