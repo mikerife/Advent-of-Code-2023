@@ -1,0 +1,36 @@
+! It's easier to split out the two sets of data. And since I'm doing that anyway
+! it's a little more straight forward to use *tread than *vread and so I made the data
+! into a csv file
+
+/clear
+
+
+*dim,block1,table,6,5,1
+*dim,block2,table,6,8,1
+*dim,result,array,6,1
+
+*tread,block1,block1,csv,,0
+*tread,block2,block2,csv,,0
+
+*do,i,1,6
+	*do,j,1,8
+		*do,k,1,5
+			*if,block2(i,j),eq,block1(i,k),then
+				result(i,1)=result(i,1)+1
+			*endif
+		*enddo
+	*enddo
+*enddo
+
+*do,i,1,6
+	*if,result(i,1),eq,0,then
+	*else
+		result(i,1)=2**(result(i,1)-1)
+	*endif
+*enddo
+			
+*vscfun,total,sum,result(1,1)
+*cfopen,total,txt
+*vwrite,total
+%I
+*cfclos

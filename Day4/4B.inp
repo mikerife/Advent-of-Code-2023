@@ -1,0 +1,42 @@
+
+/clear
+
+
+*dim,block1,table,6,5,1
+*dim,block2,table,6,8,1
+*dim,result,array,6,4
+
+
+!match instance copy total
+*tread,block1,block1,csv,,0
+*tread,block2,block2,csv,,0
+
+!match and instance
+*do,i,1,6
+	result(i,2)=1
+	*do,j,1,8
+		*do,k,1,5
+			*if,block2(i,j),eq,block1(i,k),then
+				result(i,1)=result(i,1)+1
+			*endif
+		*enddo
+	*enddo
+*enddo
+
+*do,i,1,6
+	!total
+	result(i,4)=result(i,2)+result(i,3)
+	*if,result(i,1),eq,0,then
+	*else
+		*do,j,1,%result(i,1)%
+		result(i+j,3)=result(i+j,3)+result(i,4)
+		*enddo
+	*endif
+*enddo
+
+			
+*vscfun,total,sum,result(1,4)
+*cfopen,total,txt
+*vwrite,total
+%I
+*cfclos
